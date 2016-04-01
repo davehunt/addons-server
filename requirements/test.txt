@@ -1,12 +1,16 @@
 --no-binary Pillow
 -r prod.txt
 
-execnet==1.2
+execnet==1.4.1
+fxapom==1.7.1
 nose==1.3.4
 psutil==0.2.0
-py==1.4.30
-pytest==2.7.0
-pytest-cache==1.0
+py==1.4.31
+pyjwt==1.4.0
+pytest==2.9.1
 pytest-django==2.8.0
 pytest-instafail==0.3.0
-pytest-xdist==1.13.1
+pytest-selenium==1.2.1
+pytest-variables==1.4
+pytest-xdist==1.14
+git+git://github.com/davehunt/PyPOM.git

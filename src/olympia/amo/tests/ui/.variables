@@ -1,0 +1,8 @@
+{
+  "api": {
+    "addons-dev.allizom.org": {
+      "jwt_issuer": "user:10621564:589",
+      "jwt_secret": "093ad938f1ccd6109359463c9ee80dacd0db71fa2476a3b83bb4b6b922a1600b"
+    }
+  }
+}

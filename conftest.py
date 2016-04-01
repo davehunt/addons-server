@@ -13,6 +13,11 @@ from olympia.translations.hold import clean_translations
 from olympia.users.models import UserProfile
 
 
+@pytest.fixture(scope='session')
+def base_url(base_url, request):
+    return base_url or request.getfuncargvalue('live_server').url
+
+
 @pytest.fixture(autouse=True)
 def unpin_db(request):
     """Unpin the database from master in the current DB.
