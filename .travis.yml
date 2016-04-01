@@ -28,11 +28,4 @@ before_script:
 script:
   - RUNNING_IN_CI=True tox -v -e $TOX_ENV --recreate
 notifications:
-  irc:
-    channels:
-      - "irc.mozilla.org#amo-bots"
-    on_success: change
-    on_failure: always
-  webhooks:
-        # trigger Buildtime Trend Service to parse Travis CI log
-        - https://buildtimetrend.herokuapp.com/travis
+  email: false
