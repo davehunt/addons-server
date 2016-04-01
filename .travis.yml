@@ -8,6 +8,7 @@ env:
   - TOX_ENV=assets
   - TOX_ENV=es
   - TOX_ENV=addons
+  - TOX_ENV=amo
   - TOX_ENV=devhub
   - TOX_ENV=editors
   - TOX_ENV=main
