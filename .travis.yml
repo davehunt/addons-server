@@ -1,36 +1,21 @@
 language: python
-sudo: false
+sudo: required
 python:
   - "2.7"
-env:
-  - TOX_ENV=flake8
-  - TOX_ENV=docs
-  - TOX_ENV=assets
-  - TOX_ENV=es
-  - TOX_ENV=addons
-  - TOX_ENV=amo
-  - TOX_ENV=devhub
-  - TOX_ENV=editors
-  - TOX_ENV=main
 services:
-  - memcached
+  - docker
 addons:
-  apt_packages:
-    - swig
   firefox: 'latest'
-before_install:
-  - scripts/travis_es.sh
-  - /tmp/elasticsearch/elasticsearch-1.6.2/bin/elasticsearch -d -D es.path.data=/tmp -D es.gateway.type=none -D es.index.store.type=memory -D es.discovery.zen.ping.multicast.enabled=false
-install:
-  - nvm current
-  - nvm deactivate
-  - nvm install 4
-  - nvm use 4
-  - pip install tox==1.8.1
+env:
+  global:
+    - COMPOSE_PROJECT_NAME=addonsserver
+    - DOCKER_NAME=addonsserver_web_1
 before_script:
-  - mysql -e 'create database olympia;'
-  - node --version
+  - docker-compose pull
+  - docker-compose up -d
+  - make initialize_docker
 script:
-  - RUNNING_IN_CI=True tox -v -e $TOX_ENV --recreate
+  - mv conftest.py _conftest.py
+  - py.test --base-url http://$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' $DOCKER_NAME) --driver Firefox --html results.html --junitxml junit.xml src/olympia/amo/tests/ui
 notifications:
   email: false
