@@ -13,7 +13,14 @@ env:
 before_script:
   - docker-compose pull
   - docker-compose up -d
-  - make initialize_docker
+  - docker exec -t -i ${DOCKER_NAME} python manage.py reset_db --noinput
+  - docker exec -t -i ${DOCKER_NAME} python manage.py syncdb --noinput
+  - docker exec -t -i ${DOCKER_NAME} python manage.py loaddata initial.json
+  - docker exec -t -i ${DOCKER_NAME} python manage.py import_prod_versions
+  - docker exec -t -i ${DOCKER_NAME} schematic --fake src/olympia/migrations/
+  - docker exec -t -i ${DOCKER_NAME} python manage.py loaddata zadmin/users
+  - docker exec -t -i ${DOCKER_NAME} update_assets
+  - docker exec -t -i ${DOCKER_NAME} populate_data
 script:
   - mv conftest.py _conftest.py
   - py.test --base-url http://$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' $DOCKER_NAME) --driver Firefox --html results.html --junitxml junit.xml src/olympia/amo/tests/ui
