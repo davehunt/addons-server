@@ -13,14 +13,14 @@ test:
   pre:
     - docker-compose pull
     - docker-compose up -d
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' $DOCKER_NAME)" -- bash -c "python manage.py reset_db --noinput"
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' $DOCKER_NAME)" -- bash -c "python manage.py syncdb --noinput"
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' $DOCKER_NAME)" -- bash -c "python manage.py loaddata initial.json"
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' $DOCKER_NAME)" -- bash -c "python manage.py import_prod_versions"
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' $DOCKER_NAME)" -- bash -c "schematic --fake src/olympia/migrations/"
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' $DOCKER_NAME)" -- bash -c "python manage.py loaddata zadmin/users"
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' $DOCKER_NAME)" -- bash -c "make update_assets"
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' $DOCKER_NAME)" -- bash -c "make populate_data"
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' $DOCKER_NAME)" -- bash -c "python code/manage.py reset_db --noinput"
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' $DOCKER_NAME)" -- bash -c "python code/manage.py syncdb --noinput"
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' $DOCKER_NAME)" -- bash -c "python code/manage.py loaddata initial.json"
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' $DOCKER_NAME)" -- bash -c "python code/manage.py import_prod_versions"
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' $DOCKER_NAME)" -- bash -c "schematic --fake code/olympia/migrations/"
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' $DOCKER_NAME)" -- bash -c "python code/manage.py loaddata zadmin/users"
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' $DOCKER_NAME)" -- bash -c "cd code && make update_assets"
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' $DOCKER_NAME)" -- bash -c "cd code && make populate_data"
   override:
     - mv conftest.py _conftest.py
-    - py.test --base-url http://$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' $DOCKER_NAME) --driver Firefox --html $CIRCLE_ARTIFACTS/results.html --junitxml $CIRCLE_TEST_REPORTS/junit.xml
+    - py.test -r a --base-url http://$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' $DOCKER_NAME) --sensitive-url None --driver Firefox --html $CIRCLE_ARTIFACTS/results.html --junitxml $CIRCLE_TEST_REPORTS/junit.xml src/olympia/amo/tests/ui
