@@ -13,6 +13,7 @@ test:
   pre:
     - docker-compose pull
     - docker-compose up -d
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' $DOCKER_NAME)" -- bash -c make initialize_docker_inner
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' $DOCKER_NAME)" -- bash -c "cd code && make initialize_docker_inner"
   override:
-    - cd src/olympia/amo/tests/ui && py.test --base-url http://$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' $DOCKER_NAME) --driver Firefox --html $CIRCLE_ARTIFACTS/results.html --junitxml $CIRCLE_TEST_REPORTS/junit.xml
+    - mv conftest.py _conftest.py
+    - py.test --base-url http://$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' $DOCKER_NAME) --driver Firefox --html $CIRCLE_ARTIFACTS/results.html --junitxml $CIRCLE_TEST_REPORTS/junit.xml
