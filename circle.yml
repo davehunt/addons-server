@@ -14,5 +14,6 @@ test:
     - docker-compose pull
     - docker-compose up -d
   override:
+    - mv conftest.py _conftest.py
     - cd src/olympia/amo/tests/ui
-    - py.test -r a --base-url http://$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' $DOCKER_NAME) --sensitive-url None --driver Firefox --html $CIRCLE_ARTIFACTS/results.html --junitxml $CIRCLE_TEST_REPORTS/junit.xml
+    - py.test -r a --base-url http://127.0.0.1 --driver Firefox --html $CIRCLE_ARTIFACTS/results.html --junitxml $CIRCLE_TEST_REPORTS/junit.xml
