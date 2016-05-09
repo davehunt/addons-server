@@ -7,8 +7,8 @@ class Base(Page):
 
     _url = '{base_url}/{locale}'
 
-    def __init__(self, selenium, base_url, locale='en-US', **kwargs):
-        super(Base, self).__init__(selenium, base_url, locale=locale, **kwargs)
+    def __init__(self, selenium, base_url, locale='en-US', product='firefox', **kwargs):
+        super(Base, self).__init__(selenium, base_url, locale=locale, product=product, **kwargs)
 
     @property
     def header(self):

@@ -6,6 +6,8 @@ from base import Base
 
 class Home(Base):
 
+    URL_TEMPLATE = '{locale}/{product}'
+
     @property
     def most_popular(self):
         return self.MostPopular(self)

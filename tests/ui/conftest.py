@@ -9,10 +9,22 @@ import requests
 
 
 @pytest.fixture
-def capabilities(capabilities):
-    # In order to run these tests in Firefox 48, marionette is required
-    capabilities['marionette'] = True
+def capabilities(request, capabilities):
+    driver = request.config.getoption('driver')
+    if capabilities.get('browserName', driver).lower() == 'firefox':
+        # In order to run these tests in Firefox 48, marionette is required
+        capabilities['marionette'] = True
     return capabilities
+
+
+@pytest.fixture
+def firefox_options(request, firefox_options):
+    args = request.node.get_marker('firefox_arguments')
+    if args is not None:
+        for arg in args.args:
+            firefox_options.add_argument(arg)
+    return firefox_options
+
 
 @pytest.fixture
 def fxa_account(base_url):
