@@ -1,5 +1,6 @@
 import datetime
 import os
+import shutil
 import urlparse
 
 from fxapom.fxapom import DEV_URL, PROD_URL, FxATestAccount
@@ -11,10 +12,13 @@ import requests
 
 
 @pytest.fixture
-def capabilities(capabilities):
-    # In order to run these tests in Firefox 48, marionette is required
-    capabilities['marionette'] = True
+def capabilities(request, capabilities):
+    driver = request.config.getoption('driver')
+    if capabilities.get('browserName', driver).lower() == 'firefox':
+        # In order to run these tests in Firefox 48, marionette is required
+        capabilities['marionette'] = True
     return capabilities
+
 
 @pytest.fixture
 def fxa_account(base_url):
@@ -69,24 +73,28 @@ def user(base_url, fxa_account, jwt_token):
 
 
 @pytest.yield_fixture(scope='session')
-def firefox_path(tmpdir_factory, firefox_path):
+def firefox_path(request, tmpdir_factory, firefox_path):
     if firefox_path is not None:
         yield firefox_path
     else:
-        tmp_dir = tmpdir_factory.mktemp('firefox')
-        scraper = FactoryScraper('release', version='latest', destination=str(tmp_dir))
-        filename = scraper.download()
-        path = mozinstall.install(filename, str(tmp_dir))
-        yield mozinstall.get_binary(path, 'Firefox')
-        mozinstall.uninstall(path)
-        os.remove(filename)
-        os.rmdir(str(tmp_dir))
+        cache_path = request.config.cache.makedir('firefox')
+        scraper = FactoryScraper(
+            'release',
+            version='latest-beta',
+            destination=str(cache_path))
+        download_path = scraper.download()
+        print('Firefox downloaded to: {0}'.format(download_path))
+        tmpdir = tmpdir_factory.mktemp('firefox')
+        install_path = mozinstall.install(download_path, str(tmpdir))
+        print('Firefox installed at: {0}'.format(install_path))
+        yield mozinstall.get_binary(install_path, 'Firefox')
+        shutil.rmtree(str(tmpdir))
 
 
 @pytest.fixture
 def discovery_pane_url(base_url):
     if 'localhost' in base_url:
-        discover_url = None
+        return None
     elif 'dev' in base_url:
         return 'https://discovery.addons-dev.allizom.org/'
     elif 'allizom' in base_url:
