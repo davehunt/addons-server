@@ -2,6 +2,7 @@ import datetime
 import os
 import urlparse
 
+from foxpuppet import FoxPuppet
 from fxapom.fxapom import DEV_URL, PROD_URL, FxATestAccount
 import jwt
 import pytest
@@ -15,6 +16,13 @@ def capabilities(request, capabilities):
         # In order to run these tests in Firefox 48, marionette is required
         capabilities['marionette'] = True
     return capabilities
+
+
+@pytest.fixture
+def firefox(request, selenium):
+    """Initial Firefox browser window."""
+    foxpuppet = FoxPuppet(selenium)
+    return foxpuppet.browser
 
 
 @pytest.fixture
