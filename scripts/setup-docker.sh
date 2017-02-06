@@ -6,7 +6,13 @@ python manage.py syncdb --noinput
 python manage.py loaddata initial.json
 python manage.py import_prod_versions
 schematic --fake src/olympia/migrations/
-#python manage.py createsuperuser
+
+RANDOM=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+python manage.py createsuperuser \
+  --username ${RANDOM} \
+  --email ${RANDOM}@restmail.net \
+  --add-to-supercreate-group \
+  --noinput
 #python manage.py loaddata zadmin/users
 
 # update_assets:

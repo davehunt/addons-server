@@ -1,10 +1,6 @@
-import pytest
-
 from pages.desktop.home import Home
 
 
-@pytest.mark.skip(
-    reason='https://github.com/mozilla/addons-server/issues/2462')
 def test_login(base_url, selenium, user):
     """User can login"""
     page = Home(selenium, base_url).open()
@@ -13,8 +9,6 @@ def test_login(base_url, selenium, user):
     assert page.logged_in
 
 
-@pytest.mark.skip(
-    reason='https://github.com/mozilla/addons-server/issues/2462')
 def test_logout(base_url, selenium, user):
     """User can logout"""
     page = Home(selenium, base_url).open()

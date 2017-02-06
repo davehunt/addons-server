@@ -38,6 +38,8 @@ and email address and that's it.
             help='Assign the user to the Accounts:SuperCreate group',
         )
 
+        CreateSuperUserCommand.add_arguments(self, parser)
+
     def handle(self, *args, **options):
         user_data = {}
 
