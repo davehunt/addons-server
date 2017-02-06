@@ -13,6 +13,7 @@ python manage.py createsuperuser \
   --email ${RANDOM}@restmail.net \
   --add-to-supercreate-group \
   --noinput
+python manage.py waffle_switch --create super-create-accounts on
 #python manage.py loaddata zadmin/users
 
 # update_assets:
