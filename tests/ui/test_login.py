@@ -1,3 +1,5 @@
+import pytest
+
 from pages.desktop.home import Home
 
 
@@ -9,6 +11,7 @@ def test_login(base_url, selenium, user):
     assert page.logged_in
 
 
+@pytest.mark.skip(reason='https://github.com/mozilla/geckodriver/issues/233')
 def test_logout(base_url, selenium, user):
     """User can logout"""
     page = Home(selenium, base_url).open()
